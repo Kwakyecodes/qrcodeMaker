@@ -16,6 +16,7 @@ class Home extends StatefulWidget {
 
 class HomeState extends State<Home> {
   final url = TextEditingController();
+
   // imageUrl is the url that locates the qr code in the api folder
   final imageUrl = "http://10.0.2.2:8000/static/m.jpg";
 
@@ -34,13 +35,17 @@ class HomeState extends State<Home> {
     }
   }
 
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    url.dispose();
-    super.dispose();
+  // This function prints a message to the screen
+  void printMessage(String message) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Text(message),
+          );
+        }
+    );
   }
-
 
 
   Widget build(BuildContext context) {
@@ -88,32 +93,17 @@ class HomeState extends State<Home> {
                             onPressed: () async{
 
                               String urlString = url.text;
-                              final URL = 'http://10.0.2.2:8000/$urlString/';
+                              final URL = 'http://10.0.2.2:8000/$urlString';
                               final response = await http.get(Uri.parse(URL));
-                              if (response.statusCode == 200)
+                              if (response.statusCode == 200) // this means request was successful
                               {
                                 _save();
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        content: Text("Qrcode Downloaded. Check gallery."),
-                                      );
-                                    }
-                                );
+                                printMessage("Qrcode Downloaded. Check gallery.");
                               }
                               else
                               {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                    content: Text("Something went wrong. Check url."),
-                                    );
-                                }
-                                );
+                                printMessage("Something went wrong. Check url.");
                               }
-                              dispose();
                             },
                           )
 
